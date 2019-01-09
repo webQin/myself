@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>this</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      /*
+      判断函数类型
+        箭头函数
+          this = 包含箭头函数的第一个普通函数中的this
+        普通函数
+          new fun()
+            this = 被固化在实例上
+          非new fun()
+            this = 函数的运行环境
+        bind、apply、call
+          this = 第一个参数
+      */
+      //demo1
+      function fun () {
+        console.log(this)
+      }
+      fun()  //window,this = 函数的运行环境
+      //demo2
+      function fun2 () {
+        return () => {
+          console.log(this)
+        }
+      }
+      var a = fun2()
+      a()   //window,this = 包含箭头函数的第一个普通函数中的this
+
+      //demo3
+      function fun3 () {
+        this.a = 1
+        console.log(this)
+      }
+      var p = new fun3();    //fun3 {a: 1},this = 被固化在实例上
+
+      //demo4
+      function fun4 () {
+        console.log(this)
+      }
+      var a = {
+        name:"1111"
+      }
+      var bindFun4 = fun4.bind(a)
+      bindFun4()   //{name: "1111"},this = 第一个参数
+
+    </script>
+  </body>
+</html>
