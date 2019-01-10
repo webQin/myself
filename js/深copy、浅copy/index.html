@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>深copy，浅copy</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      /*
+      对象拷贝(Object Copy)就是将一个对象的属性拷贝到另一个有着相同类类型的对象中去。在程序中拷贝对象是很常见的，主要是为了在新的上下文环境中复用对象的部分或全部数据
+      浅拷贝----浅拷贝仅仅是指向被复制的内存地址，如果原地址中对象被改变了，那么浅拷贝出来的对象也会相应改变。
+      深拷贝----开辟了一块新的内存地址用于存放复制的对象
+      */
+
+      var obj = {
+        str:"hello",
+        num:1,
+        arr:[1,2],
+        fun:function(){},
+        bool:false,
+        value1:null,
+        value2:undefined,
+        objects:{
+          a:1,
+          b:2
+        }
+      }
+
+      //浅拷贝
+      function shallowCopy(objs){
+        var obj1 = {}
+        for (var item in objs) {
+          if (objs.hasOwnProperty(item)) {
+            obj1[item] = objs[item]
+          }
+        }
+        return obj1
+      }
+
+      var getObj = shallowCopy(obj)
+      getObj.str = "helloword"   //未改变
+      getObj.arr[1] = 10  //已改变
+      getObj.num = 2 //未改变
+      getObj.fun = function(){  //未改变
+        alert(1)
+      }
+      getObj.bool = true  //未改变
+      getObj.value1 = undefined  //未改变
+      getObj.value2 = null  //未改变
+      getObj.objects.a = 100  //已改变
+      console.log("shallowCopy=",obj)
+
+      /*
+      那么，问题来了，为什么只有arr和objects可以改变？
+      答案：原始数据类型赋值时，给的是实实在在的数据值 ，赋值后二者只是值一样而已，不会相互影响； 而对象类型，给的是原数据的引用地址，所以新旧数据会互相影响
+      所以，我们最终解决的实际问题是某一对象中的数组或者对象的拷贝
+      */
+
+      //深copy
+      function deepCopy (objs) {
+        var obj2 = {}
+        for (var i in objs) {
+          if (objs.hasOwnProperty(i)) {
+            //加入一些限定条件
+            if(typeof objs[i] === 'object'){  //对象类型
+               if(objs[i] instanceof Array){  //数组
+                 obj2[i] = []
+               }else{  //对象
+                 obj2[i] = {};
+               }
+               deepCopy(objs[i])
+            }else{
+              obj2[i] = objs[i]
+            }
+          }
+        }
+        return obj2
+      }
+
+      var getObj2 = deepCopy(obj)
+      getObj2.arr[1] = 5  //未改变
+      getObj2.objects.a = 200  //未改变
+      console.log("deepCopy=",obj)
+    </script>
+  </body>
+</html>
